@@ -1,8 +1,12 @@
 from flask import Flask, render_template, abort
 from jinja2.exceptions import TemplateNotFound
-import markdown
+import markdown, redis
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
 
 app = Flask(__name__)
+rd = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
 
 
 @app.context_processor
@@ -30,10 +34,16 @@ def custom_tags():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
-    try:
-        return render_template('_{}.html'.format(path))
-    except TemplateNotFound:
-        abort(404)
+    cached = rd.get(path)
+    if cached is not None:
+        return cached
+    else:
+        try:
+            rendered = render_template('_{}.html'.format(path))
+            rd.set(path, rendered)
+            return rendered
+        except TemplateNotFound:
+            abort(404)
 
 
 if __name__ == '__main__':
