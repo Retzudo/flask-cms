@@ -1,3 +1,4 @@
+from flask.ext.login import current_user
 import markdown
 
 
@@ -14,8 +15,21 @@ def custom_tags():
             file_content = f.read()
 
         if file_name.endswith('.md'):
-            return markdown.markdown(file_content, output_format='html5')
+            html = markdown.markdown(file_content, output_format='html5')
         else:
-            return file_content
+            html = file_content
+
+        if current_user.is_authenticated:
+            script = """<script>
+            (function () {
+                tinymce.init({
+                    selector: '.edit-text',
+                    inline: true
+                });
+            })();
+            </script>"""
+            html = '<div class="edit-text">{}</div>{}'.format(html, script)
+
+        return html
 
     return dict(text_content=text_content)

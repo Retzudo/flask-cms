@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     {%- block styles -%}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
+    {% if current_user.is_authenticated %}<script src="{{ url_for('static', filename='bower/tinymce/tinymce.min.js') }}"></script>{% endif %}
 </head>
 <body>
     {%- block content -%}{%- endblock -%}
