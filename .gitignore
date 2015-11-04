@@ -2,3 +2,4 @@
 env/
 *.pyc
 rope_project/
+users.dat
