@@ -1,58 +1,46 @@
-from flask import Flask, render_template, abort
+import settings
+from flask import Flask, render_template, abort, redirect
+from flask.ext.login import LoginManager
+from flask.ext.login import current_user
+from flask.ext.login import login_user
 from jinja2.exceptions import TemplateNotFound
-import markdown
-import redis
-
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
+from util import tags
+from util import cache
+from util import users
+from util import forms
 
 app = Flask(__name__)
-rd = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
+app.secret_key = settings.SECRET_KEY
+app.context_processor(tags.custom_tags)
 
-
-@app.context_processor
-def custom_tags():
-    """Custom tag for injecting text into a template.
-
-    Read a file and return its content. If it is a markdown file,
-    parse it.
-    """
-    def text_content(file_name):
-        # The exception that might get thrown here is the one we want to show
-        # the user if they specify a non-existing file so don't handle it.
-        with open('content/{}'.format(file_name)) as f:
-            file_content = f.read()
-
-        if file_name.endswith('.md'):
-            return markdown.markdown(file_content, output_format='html5')
-        else:
-            return file_content
-
-    return dict(text_content=text_content)
-
-
-def delete_cache(path=None):
-    """
-    Deletes the cache entries for all cached paths or a specific cached path.
-    """
-    if path is None:
-        for p in rd.lrange('#cached_paths#', 0, -1):
-            rd.delete(p)
-        rd.delete('#cached_paths#')
-    else:
-        rd.delete(path)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.user_loader(users.get_user)
 
 
 def is_logged_in():
-    """Placeholder."""
-    return False
+    return current_user.is_authenticated
 
 
-@app.route('/', defaults={'path': '_index'})
-@app.route('/<path:path>')
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    form = forms.LoginForm()
+    if form.validate_on_submit():
+        user = users.get_user(form.data['username'])
+        if user:
+            if user.check_password(form.data['password']):
+                print('passwords match')
+                login_user(user)
+                return redirect('/')
+
+    return render_template('admin.html', form=form)
+
+
+@app.route('/', defaults={'path': '_index'}, methods=['GET'])
+@app.route('/<path:path>', methods=['GET'])
 def index(path):
-    cached = rd.get(path)
-    if cached is not None and not is_logged_in():
+    cached = cache.get_path(path)
+    if cached is not None and not is_logged_in() and not app.debug:
         return cached
     else:
         try:
@@ -60,8 +48,7 @@ def index(path):
                 rendered = render_template('index.html')
             else:
                 rendered = render_template('_{}.html'.format(path))
-            rd.set(path, rendered)
-            rd.lpush('#cached_paths#', path)
+            cache.cache_path(path, rendered)
             return rendered
         except TemplateNotFound:
             abort(404)
