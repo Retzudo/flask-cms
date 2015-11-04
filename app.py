@@ -43,15 +43,23 @@ def delete_cache(path=None):
         rd.delete(path)
 
 
-@app.route('/', defaults={'path': ''})
+def is_logged_in():
+    """Placeholder."""
+    return False
+
+
+@app.route('/', defaults={'path': '_index'})
 @app.route('/<path:path>')
 def index(path):
     cached = rd.get(path)
-    if cached is not None:
+    if cached is not None and not is_logged_in():
         return cached
     else:
         try:
-            rendered = render_template('_{}.html'.format(path))
+            if path == '_index':
+                rendered = render_template('index.html')
+            else:
+                rendered = render_template('_{}.html'.format(path))
             rd.set(path, rendered)
             rd.lpush('#cached_paths#', path)
             return rendered
