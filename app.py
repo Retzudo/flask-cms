@@ -44,6 +44,7 @@ def update_text():
     form = forms.UpdateTextForm(csrf_enabled=False)
     if form.validate_on_submit():
         content.update_file(form.data['file_name'], form.data['content'])
+        cache.delete_all_paths()
 
     return ''
 
