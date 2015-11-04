@@ -1,3 +1,4 @@
+from flask import render_template
 from flask.ext.login import current_user
 import markdown
 
@@ -20,15 +21,11 @@ def custom_tags():
             html = file_content
 
         if current_user.is_authenticated:
-            script = """<script>
-            (function () {
-                tinymce.init({
-                    selector: '.edit-text',
-                    inline: true
-                });
-            })();
-            </script>"""
-            html = '<div class="edit-text">{}</div>{}'.format(html, script)
+            script = render_template('editor.js')
+            html = """
+                <div class="edit-text" data-filename="{filename}">{html}</div>
+                <script>{script}</script>
+            """.format(filename=file_name, html=html, script=script)
 
         return html
 

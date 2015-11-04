@@ -1,0 +1,14 @@
+.edit-text {
+    border-radius: 2px;
+    border: 2px dotted #ccc;
+    position: relative;
+}
+
+.edit-text:after {
+    content: 'edit';
+    font-family: monospace;
+    color: #ccc;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}

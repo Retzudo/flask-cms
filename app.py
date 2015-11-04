@@ -1,13 +1,15 @@
 import settings
-from flask import Flask, render_template, abort, redirect
+from flask import Flask, render_template, abort, redirect, request
 from flask.ext.login import LoginManager
 from flask.ext.login import current_user
 from flask.ext.login import login_user
+from flask.ext.login import login_required
 from jinja2.exceptions import TemplateNotFound
 from util import tags
 from util import cache
 from util import users
 from util import forms
+from util import content
 
 app = Flask(__name__)
 app.secret_key = settings.SECRET_KEY
@@ -34,6 +36,16 @@ def admin():
                 return redirect('/')
 
     return render_template('admin.html', form=form)
+
+
+@app.route('/update-text', methods=['POST'])
+@login_required
+def update_text():
+    form = forms.UpdateTextForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        content.update_file(form.data['file_name'], form.data['content'])
+
+    return ''
 
 
 @app.route('/', defaults={'path': '_index'}, methods=['GET'])
