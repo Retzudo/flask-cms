@@ -1,6 +1,7 @@
 from flask import Flask, render_template, abort
 from jinja2.exceptions import TemplateNotFound
-import markdown, redis
+import markdown
+import redis
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
@@ -17,11 +18,10 @@ def custom_tags():
     parse it.
     """
     def text_content(file_name):
-        try:
-            with open('content/{}'.format(file_name)) as f:
-                file_content = f.read()
-        except IOError:
-            raise Exception('File "{}" not found')
+        # The exception that might get thrown here is the one we want to show
+        # the user if they specify a non-existing file so don't handle it.
+        with open('content/{}'.format(file_name)) as f:
+            file_content = f.read()
 
         if file_name.endswith('.md'):
             return markdown.markdown(file_content, output_format='html5')
@@ -29,6 +29,18 @@ def custom_tags():
             return file_content
 
     return dict(text_content=text_content)
+
+
+def delete_cache(path=None):
+    """
+    Deletes the cache entries for all cached paths or a specific cached path.
+    """
+    if path is None:
+        for p in rd.lrange('#cached_paths#', 0, -1):
+            rd.delete(p)
+        rd.delete('#cached_paths#')
+    else:
+        rd.delete(path)
 
 
 @app.route('/', defaults={'path': ''})
@@ -41,6 +53,7 @@ def index(path):
         try:
             rendered = render_template('_{}.html'.format(path))
             rd.set(path, rendered)
+            rd.lpush('#cached_paths#', path)
             return rendered
         except TemplateNotFound:
             abort(404)
