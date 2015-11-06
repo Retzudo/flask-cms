@@ -5,7 +5,7 @@
     "Retzudo"
   ],
   "description": "",
-  "license": "GPLv3",
+  "license": "AGPLv3",
   "private": true,
   "ignore": [
     "**/.*",

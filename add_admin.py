@@ -10,6 +10,5 @@ if __name__ == '__main__':
 
     if password == password_repeat:
         users.add_user(username, password)
-        
     else:
         print('Passwords did not match.', file=sys.stderr)
