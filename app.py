@@ -1,9 +1,10 @@
 import settings
-from flask import Flask, render_template, abort, redirect, request
+from flask import Flask, render_template, abort, redirect
 from flask.ext.login import LoginManager
 from flask.ext.login import current_user
 from flask.ext.login import login_user
 from flask.ext.login import login_required
+from flask.ext.login import logout_user
 from jinja2.exceptions import TemplateNotFound
 from util import tags
 from util import cache
@@ -24,8 +25,8 @@ def is_logged_in():
     return current_user.is_authenticated
 
 
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
         user = users.get_user(form.data['username'])
@@ -36,6 +37,12 @@ def admin():
                 return redirect('/')
 
     return render_template('admin.html', form=form)
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    logout_user()
+    return redirect('/')
 
 
 @app.route('/update-text', methods=['POST'])

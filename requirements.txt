@@ -3,7 +3,6 @@ Flask-Login==0.3.2
 Flask-WTF==0.12
 itsdangerous==0.24
 Jinja2==2.8
-Markdown==2.6.3
 MarkupSafe==0.23
 passlib==1.6.5
 redis==2.10.5

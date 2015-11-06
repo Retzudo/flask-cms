@@ -12,6 +12,11 @@
     {% endif %}
 </head>
 <body>
+    {% if current_user.is_authenticated %}
+        <div style="position: absolute; bottom: 0; right: 0;">
+            Logged in as {{ current_user.username }}. <a href="/logout">Logout</a>
+        </div>
+    {% endif %}
     {%- block content -%}{%- endblock -%}
     <script src="{{ url_for('static', filename='main.js') }}"></script>
     {%- block javascripts -%}{% endblock %}

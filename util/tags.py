@@ -1,6 +1,5 @@
 from flask import render_template
 from flask.ext.login import current_user
-import markdown
 
 
 def custom_tags():
@@ -15,18 +14,13 @@ def custom_tags():
         with open('content/{}'.format(file_name)) as f:
             file_content = f.read()
 
-        if file_name.endswith('.md'):
-            html = markdown.markdown(file_content, output_format='html5')
-        else:
-            html = file_content
-
         if current_user.is_authenticated:
-            script = render_template('editor.js')
-            html = """
-                <div class="edit-text" data-filename="{filename}">{html}</div>
-                <script>{script}</script>
-            """.format(filename=file_name, html=html, script=script)
-
-        return html
+            return render_template(
+                'text_content.html',
+                file_name=file_name,
+                html=file_content
+            )
+        else:
+            return file_content
 
     return dict(text_content=text_content)

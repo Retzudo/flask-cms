@@ -4,5 +4,5 @@ env/
 rope_project/
 users.dat
 /static/bower
-/content/*
+/content/*.html
 /templates/_*.html
