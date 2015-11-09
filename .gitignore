@@ -6,3 +6,4 @@ users.dat
 /static/bower
 /content/*.html
 /templates/_*.html
+.cache

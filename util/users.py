@@ -15,7 +15,10 @@ class User(UserMixin):
         self.password_hash = sha256_crypt.encrypt(password)
 
     def check_password(self, password):
-        return sha256_crypt.verify(password, self.password_hash)
+        if self.password_hash:
+            return sha256_crypt.verify(password, self.password_hash)
+        else:
+            return False
 
     def get_id(self):
         return self.username
@@ -35,7 +38,7 @@ def load_users():
     users = []
     try:
         with open(USERS_FILE) as f:
-            for line in f:
+            for line in f.readlines():
                 username, password_hash = line.split(':')
                 user = User(username, password_hash)
                 users.append(user)
