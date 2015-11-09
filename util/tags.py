@@ -2,6 +2,10 @@ from flask import render_template
 from flask.ext.login import current_user
 
 
+def is_logged_in():
+    return current_user.is_authenticated
+
+
 def custom_tags():
     """Custom tag for injecting text into a template.
 
@@ -14,7 +18,8 @@ def custom_tags():
         with open('content/{}'.format(file_name)) as f:
             file_content = f.read()
 
-        if current_user.is_authenticated:
+        print('##########', is_logged_in())
+        if is_logged_in():
             return render_template(
                 'text_content.html',
                 file_name=file_name,
