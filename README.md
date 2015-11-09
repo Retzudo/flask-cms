@@ -1,4 +1,4 @@
-Flask CMS
+Manufactorum
 =========
 
 A mix between a static site generator and a CMS. The general site layout and
