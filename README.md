@@ -7,13 +7,6 @@ assisted with WYSIWYG. This system is meant for websites that rarely need only
 minor updates which need to be made by untrained people.
 
 
-TODO
-----
-
-- Admin login
-- Editing text
-
-
 How?
 ----
 
