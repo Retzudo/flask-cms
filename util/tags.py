@@ -17,7 +17,6 @@ def custom_tags():
         with open('content/{}'.format(file_name)) as f:
             file_content = f.read()
 
-        print('##########', is_logged_in())
         if is_logged_in():
             return render_template(
                 'text_content.html',
