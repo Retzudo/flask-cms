@@ -9,8 +9,7 @@ def is_logged_in():
 def custom_tags():
     """Custom tag for injecting text into a template.
 
-    Read a file and return its content. If it is a markdown file,
-    parse it.
+    Read a file and return its content.
     """
     def text_content(file_name):
         # The exception that might get thrown here is the one we want to show
