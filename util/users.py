@@ -35,17 +35,17 @@ class User(UserMixin):
 
 def load_users():
     """Load all users from the users file."""
-    users = []
+    users_list = []
     try:
         with open(USERS_FILE) as f:
             for line in f.readlines():
-                username, password_hash = line.split(':')
+                username, password_hash = line.strip().split(':')
                 user = User(username, password_hash)
-                users.append(user)
+                users_list.append(user)
     except IOError:
         return []
 
-    return users
+    return users_list
 
 
 def get_user(id):
@@ -65,6 +65,17 @@ def add_user(username, password):
         user = User(username)
         user.set_password(password)
         with open(USERS_FILE, 'a+') as f:
-            f.write('{}:{}'.format(user.username, user.password_hash))
+            f.write('{}:{}\r'.format(user.username, user.password_hash))
+        return user
     else:
         raise Exception('Users already exists.')
+
+
+def remove_user(username):
+    try:
+        with open(USERS_FILE, 'w') as f:
+            lines = f.readlines()
+            lines = [line for line in lines if not line.startswith(username)]
+            f.write('\n'.join(lines))
+    except IOError:
+        pass

@@ -36,22 +36,23 @@ def test_user_password():
 
 
 def test_load_users():
-    m = mock_open()
-    with patch('builtins.open', m):
-        assert util.users.load_users() == []
+    assert util.users.load_users() == []
 
-    # Username: admin, password: admin
-    f = 'admin:$5$rounds=535000$z0v1bgIQg9vv2bOF$oa4gjeEs1ktRJUCMyKKUcicWz43sS7Idxo8e3YZtI86'
-    m = mock_open(read_data=f)
-    with patch('builtins.open', m):
-        assert len(util.users.load_users()) == 1
-        assert util.users.user_exists('admin') is True
-        assert util.users.user_exists('Someone') is False
+    util.users.add_user(
+        'test_load_users_user',
+        'test_load_users_user_password'
+    )
 
-        user = util.users.get_user('admin')
-        assert user is not None
-        assert user.username == 'admin'
-        assert user.check_password('admin') is True
+    assert len(util.users.load_users()) == 1
+    assert util.users.user_exists('test_load_users_user') is True
+    assert util.users.user_exists('Someone') is False
+
+    user = util.users.get_user('test_load_users_user')
+    assert user is not None
+    assert user.username == 'test_load_users_user'
+    assert user.check_password('test_load_users_user_password') is True
+
+    util.users.remove_user('test_load_users_user')
 
 
 def test_add_user():
@@ -73,3 +74,16 @@ def test_add_user():
             util.users.add_user('user', 'user')
 
         os.remove(test_file)
+
+
+def test_remove_user():
+    user = util.users.add_user(
+        'test_remove_user_user',
+        'test_remove_user_user_password'
+    )
+    assert user is not None
+    assert user.username == 'test_remove_user_user'
+    assert user.check_password('test_remove_user_user_password') is True
+
+    util.users.remove_user('test_remove_user_user')
+    assert util.users.get_user('test_remove_user_user') is None

@@ -22,7 +22,10 @@ login_manager.user_loader(users.get_user)
 
 
 def is_logged_in():
-    return current_user.is_authenticated
+    if current_user:
+        return current_user.is_authenticated
+    else:
+        return False
 
 
 @app.route('/login', methods=['GET', 'POST'])
