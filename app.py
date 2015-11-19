@@ -35,7 +35,6 @@ def login():
         user = users.get_user(form.data['username'])
         if user:
             if user.check_password(form.data['password']):
-                print('passwords match')
                 login_user(user)
                 return redirect('/')
 
