@@ -69,6 +69,7 @@ def index(path):
             if path == '_index':
                 rendered = render_template('index.html')
             else:
+                path = path.replace('/', '__')
                 rendered = render_template('_{}.html'.format(path))
             cache.cache_path(path, rendered)
             return rendered
