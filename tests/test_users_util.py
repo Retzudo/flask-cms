@@ -5,6 +5,7 @@ sys.path.append(
 
 import pytest
 import util.users
+from unittest_utils import temp_file
 from util.users import User
 from unittest.mock import patch
 from unittest.mock import mock_open
@@ -36,23 +37,25 @@ def test_user_password():
 
 
 def test_load_users():
-    assert util.users.load_users() == []
+    with temp_file('testusers.dat'):
+        with patch('util.users.USERS_FILE', 'testusers.dat'):
+            assert util.users.load_users() == []
 
-    util.users.add_user(
-        'test_load_users_user',
-        'test_load_users_user_password'
-    )
+            util.users.add_user(
+                'test_load_users_user',
+                'test_load_users_user_password'
+            )
 
-    assert len(util.users.load_users()) == 1
-    assert util.users.user_exists('test_load_users_user') is True
-    assert util.users.user_exists('Someone') is False
+            assert len(util.users.load_users()) == 1
+            assert util.users.user_exists('test_load_users_user') is True
+            assert util.users.user_exists('Someone') is False
 
-    user = util.users.get_user('test_load_users_user')
-    assert user is not None
-    assert user.username == 'test_load_users_user'
-    assert user.check_password('test_load_users_user_password') is True
+            user = util.users.get_user('test_load_users_user')
+            assert user is not None
+            assert user.username == 'test_load_users_user'
+            assert user.check_password('test_load_users_user_password') is True
 
-    util.users.remove_user('test_load_users_user')
+            util.users.remove_user('test_load_users_user')
 
 
 def test_add_user():
