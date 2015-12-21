@@ -1,3 +1,4 @@
+from manufactorum import app
 from manufactorum.util import cache
 from unittest.mock import patch
 
@@ -18,11 +19,12 @@ def test_cache():
     assert cache.cache_path('/testpath3', 'content') is None
 
 
-@patch('manufactorum.util.cache.settings')
-def test_without_redis(mock_settings):
-    mock_settings.REDIS_HOST = 'example.com'
-    mock_settings.REDIS_PORT = 9999
-    mock_settings.REDIS_TIMEOUT = 0.1
-
-    cache.cache_path('/testpath', 'content')
-    assert cache.get_path('/testpath') is None
+def test_without_redis():
+    config = {
+        'REDIS_HOST': 'example.com',
+        'REDIS_PORT': 9999,
+        'REDIS_TIMEOUT': 0.1
+    }
+    with patch.dict('manufactorum.app.config', config):
+        cache.cache_path('/testpath', 'content')
+        assert cache.get_path('/testpath') is None

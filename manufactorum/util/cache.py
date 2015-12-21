@@ -1,6 +1,6 @@
 """Cache handling utilities."""
+from manufactorum import app
 import redis
-import settings
 import sys
 from redis.exceptions import ConnectionError
 
@@ -8,11 +8,14 @@ CACHE_LIST_KEY = '#cached_paths#'
 
 
 def get_redis():
-    return redis.Redis(
-        host=settings.REDIS_HOST,
-        port=settings.REDIS_PORT,
-        socket_timeout=settings.REDIS_TIMEOUT
-    )
+    if app.config['REDIS_SOCKET']:
+        return redis.Redis(unix_socket_path=app.config['REDIS_SOCKET'])
+    else:
+        return redis.Redis(
+            host=app.config['REDIS_HOST'],
+            port=app.config['REDIS_PORT'],
+            socket_timeout=app.config['REDIS_TIMEOUT']
+        )
 
 
 def redis_wrapper(redis_action):
@@ -23,7 +26,7 @@ def redis_wrapper(redis_action):
         except ConnectionError:
             print(
                 'Could not connect to redis on {}:{}. Caching unavailable.'
-                .format(settings.REDIS_HOST, settings.REDIS_PORT),
+                .format(app.config['REDIS_HOST'], app.config['REDIS_PORT']),
                 file=sys.stderr
             )
             return None
