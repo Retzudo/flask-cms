@@ -1,10 +1,5 @@
-import sys
-import os.path
+from manufactorum.util import content
 import os
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-
-from util import content
 
 
 def test_update_file():
@@ -15,7 +10,7 @@ def test_update_file():
     """
     content.update_file(filename, text)
 
-    with open('content/{}'.format(filename)) as f:
+    with open('manufactorum/content/{}'.format(filename)) as f:
         assert text == f.read()
 
-    os.remove('content/{}'.format(filename))
+    os.remove('manufactorum/content/{}'.format(filename))

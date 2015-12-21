@@ -1,9 +1,4 @@
-import sys
-import os.path
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-
-from util import cache
+from manufactorum.util import cache
 from unittest.mock import patch
 
 
@@ -23,7 +18,7 @@ def test_cache():
     assert cache.cache_path('/testpath3', 'content') is None
 
 
-@patch('util.cache.settings')
+@patch('manufactorum.util.cache.settings')
 def test_without_redis(mock_settings):
     mock_settings.REDIS_HOST = 'example.com'
     mock_settings.REDIS_PORT = 9999
