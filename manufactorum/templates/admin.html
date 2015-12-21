@@ -1,0 +1,22 @@
+{% extends 'master.html' %}
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+    <form action="/login" method="post">
+        <!-- <label for="username">Username</label>
+        <input type="text" name="username" id="username">
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password"> -->
+        {{ form.username.label }}
+        {{ form.username }}
+        {{ form.password.label }}
+        {{ form.password }}
+
+        {{ form.csrf_token }}
+        <button type="submit">Login</button>
+    </form>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

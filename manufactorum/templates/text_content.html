@@ -1,0 +1,20 @@
+<div class="edit-text" data-filename="{{file_name}}">{{html|safe}}</div>
+<script>
+(function () {
+    tinymce.init({
+        selector: '.edit-text',
+        inline: true,
+        plugins: 'save autosave code',
+        menubar: false,
+        toolbar: 'save | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | code',
+        save_enablewhendirty: true,
+        save_onsavecallback: function () {
+            $.post('/update-text', {
+                file_name: $('.edit-text').data('filename'),
+                content: this.getContent()
+            });
+            return true;
+        }
+    });
+})();
+</script>
