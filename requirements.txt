@@ -4,12 +4,17 @@ Flask-Login==0.3.2
 Flask-WTF==0.12
 itsdangerous==0.24
 Jinja2==2.8
+linecache2==1.0.0
 Markdown==2.6.3
 MarkupSafe==0.23
 passlib==1.6.5
 py==1.4.30
+py-gfm==0.1.1
 pytest==2.8.2
 pytest-cov==2.2.0
 redis==2.10.5
+six==1.10.0
+traceback2==1.4.0
+unittest2==1.1.0
 Werkzeug==0.10.4
 WTForms==2.0.2

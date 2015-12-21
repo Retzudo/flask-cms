@@ -8,3 +8,4 @@ users.dat
 /templates/_*.html
 .cache
 /htmlcov
+/content/

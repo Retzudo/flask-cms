@@ -1,5 +1,6 @@
 from flask import render_template
 from flask.ext.login import current_user
+from markdown import markdown
 
 
 def is_logged_in():
@@ -7,11 +8,12 @@ def is_logged_in():
 
 
 def custom_tags():
-    """Custom tag for injecting text into a template.
-
-    Read a file and return its content.
+    """
+    Custom tag for injecting text into a template. If logged in, append
+    the JavaScript for editing.
     """
     def text_content(file_name):
+        """Read a file and return its content."""
         # The exception that might get thrown here is the one we want to show
         # the user if they specify a non-existing file so don't handle it.
         with open('content/{}'.format(file_name)) as f:
@@ -26,4 +28,11 @@ def custom_tags():
         else:
             return file_content
 
-    return dict(text_content=text_content)
+    def markdown_content(file_name):
+        """Read a file and parse it as GitHub Markdown."""
+        with open('content/{}'.format(file_name)) as f:
+            file_content = f.read()
+
+        return markdown(file_content, ['gfm'])
+
+    return dict(text_content=text_content, markdown_content=markdown_content)
