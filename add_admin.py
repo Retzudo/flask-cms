@@ -1,6 +1,6 @@
 import getpass
 import sys
-from util import users
+from manufactorum.util import users
 
 
 if __name__ == '__main__':
