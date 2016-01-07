@@ -3,9 +3,8 @@ env/
 *.pyc
 rope_project/
 users.dat
-/static/bower
-/content/*.html
-/templates/_*.html
+/manufactorum/static/bower
+/manufactorum/content/
+/manufactorum/templates/_*.html
 .cache
 /htmlcov
-/content/
