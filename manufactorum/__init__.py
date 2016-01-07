@@ -15,12 +15,16 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.user_loader(users.get_user)
 
-cache_config = {
-    'CACHE_TYPE': 'redis',
-    'CACHE_REDIS_PORT': app.config['REDIS_PORT'],
-    'CACHE_REDIS_HOST': app.config['REDIS_HOST'],
-    'CACHE_DEFAULT_TIMEOUT': 60*60,  # in seconds
-}
+if app.config['CACHING_DISABLED']:
+    cache_config = {
+        'CACHE_TYPE': 'redis',
+        'CACHE_REDIS_PORT': app.config['REDIS_PORT'],
+        'CACHE_REDIS_HOST': app.config['REDIS_HOST'],
+        'CACHE_DEFAULT_TIMEOUT': 60*60,  # in seconds
+    }
+else:
+    cache_config = {'CACHE_TYPE': 'null'}
+
 cache = Cache(app, config=cache_config)
 
 import manufactorum.views

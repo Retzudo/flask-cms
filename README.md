@@ -54,6 +54,26 @@ This tag includes a GitHub Markdown file and parses it. Works the same as
 `text_content` but the text is not editable (for now).
 
 
+Settings
+--------
+
+There are some settings you can modify. To do that, create a file
+`settings.cfg`. You can look up values to change in `default_settings.cfg`. I
+highly encourage you to change `SECRET_KEY` to a random string. If you don't do
+this, your installation will be vulnerable to CSRF attacks. Your should treat
+`default_settings.cfg` as a read-only file in case you want to look up the
+defaults.
+
+
+Caching
+-------
+
+Caching is enabled by default and requires a running version of redis. It
+greatly improves rendering times because templates are not rendered every time a
+request is made. To disable caching, add `CACHING_DISABLED = True` to your
+`settings.cfg`.
+
+
 Files and directories
 ---------------------
 
