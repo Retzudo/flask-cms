@@ -15,7 +15,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.user_loader(users.get_user)
 
-if app.config['CACHING_DISABLED']:
+if not app.config['CACHING_DISABLED']:
     cache_config = {
         'CACHE_TYPE': 'redis',
         'CACHE_REDIS_PORT': app.config['REDIS_PORT'],
