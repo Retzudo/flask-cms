@@ -1,28 +1,57 @@
 [![Build Status](https://travis-ci.org/Retzudo/manufactorum.svg)](https://travis-ci.org/Retzudo/manufactorum)
 
 Manufactorum
-=========
+============
 
-A mix between a static site generator and a CMS. The general site layout and
-design is made with code. Editing text is only possible in fixed placed but
-assisted with WYSIWYG. This system is meant for websites that rarely need only
-minor updates which need to be made by untrained people.
+Ever wanted to make a simple website but with the ability to edit text on the
+fly without SSHing to remote servers and editing files or doing something else
+overly complicated just to fix a typo? If you are like me, you don't want to use
+a full-blown CMS for just a bit of HTML, CSS and text that rarely changes
+because they are huge and generally suck for small websites.
 
 
 How?
 ----
 
-The idea is that we have a catch-all route that loads templates based on the
-path string. Templates that should be matched by routes have a leading underscore.
-If `/test` is requested load the template `_test.html`. If a site was rendered
-once, the resulting HTML is saved into a redis DB. If a route has been cached
-before, the cached result is returned instead. Since this CMS/generator
-thing is meant for pages that rarely change, we don't need to re-render the
-template on every request.
+Similar to ye olde days, paths of your website only exist if there is a file for
+it. If you want a path `/about` to be available you need to create a file
+`templates/_about.html` and fill it with content (note the preceding `_`).
+Because Manufactorum is based on Flask we have all the features of Jinja2
+available to us. Here's an example for `_about.html`:
 
-We also have a special template tag which lets us embed HTML files
-from the `content` directory. If an admin is logged in, thid tag also renders a
-WYSIWYG editor that lets an end-user change the text on the go.
+```html+jinja
+{% extends "master.html" %}
+
+{% block content %}
+    <h1>Oi!</h1>
+{% endblock %}
+```
+
+This extends the basic HTML5 template `master.html` (which already exists) and
+fills the `content` block. If you now start Manufactorum and navigate to
+`/about`, you'll see your website shouting "Oi!" at you. Every other path except
+for `/` will result in a 404 error message. Because `/` is special, there's a
+special file for it: `templates/index.html`. You can of course modify it to suit
+your needs.
+
+There are also custom template tags which make blocks of text editable by
+admins. More on that further down.
+
+
+Custom template tags
+--------------------
+
+### `text_content`
+This tag lets you include a HTML snippet form `content/` that becomes editable
+when logged in. Use it like this: `{{ text_content('contact_info.html')|safe }}`.
+Note the `|safe` filter.
+
+This tag uses TinyMCE to make text editable. If you safe your changes, the
+original file is overwritten.
+
+### `markdown_content`
+This tag includes a GitHub Markdown file and parses it. Works the same as
+`text_content` but the text is not editable (for now).
 
 
 Files and directories
@@ -44,47 +73,29 @@ Don't change it either.
 
 ### `templates/_*.html`
 If you create a file `_my-site.html` the route `/my-site` becomes available.
-These files are rendered with Jinja2 and should extend `master.html`. If you
-don't extend `master.html` text editing won't work.
+These files are rendered with Jinja2 and can extend `master.html`. If you don't
+extend `master.html` text editing won't work because all the needed JavaScripts
+are included there.
 
 ### `content/`
-This is the directory where you store your editable HTML snippets that you can
-include in your `_*.html` pages.
-
-
-Custom template tags
---------------------
-
-### `text_content`
-This tag lets you include a HTML snippet form `content/` that becomes editable
-when logged in. Use it like this: `{{ text_content('contact_info.html')|safe }}`.
-Note the `|safe` filter.
+This is the directory where you store your Markdown or editable HTML snippets
+that you can include in your `_*.html` pages.
 
 
 Reserved routes
 ---------------
-There are some reserved routes that can't become custom pages. These are `/login`,
-`/logout` and `/update-text`--a POST-only route that allows for text editing.
+There are some reserved routes that can't become custom pages. These are
+`/login`, `/logout` and `/update-text`--a POST-only route that allows for text
+editing.
 
 
 Utils
 -----
-There is an executable Python script `add_admin.py` that lets you do exactly that.
-It prompts for a user name and a password. The user name and the salted and hashed
-password are stored in a a file. `users.dat` (human readable).
+There is an executable Python script `add_admin.py` that lets you do add an
+admin user. It prompts for a user name and a password. The user name and the
+salted and hashed password are stored in a a file. `users.dat` (human readable).
 
 
-nginx
------
-There's a [redis nginx module](https://github.com/openresty/redis2-nginx-module#readme)
-that we could use to bypass Python entirely for cached paths. E. g. use $uri to
-find a key in redis. If redis returns an error, try redis2_next_upstream to
-forward to Python/Gunicorn.
-
-
-Why?
-----
-
-Generally CMSs are too bloated for small sites that rarely change and static site
-generators are not designed for end users in mind because you need to know how
-to use the command line.
+Proper tutorial
+---------------
+WIP
