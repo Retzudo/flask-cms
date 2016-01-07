@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Retzudo/manufactorum.svg)](https://travis-ci.org/Retzudo/manufactorum)
+
 Manufactorum
 =========
 
