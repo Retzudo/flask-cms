@@ -1,7 +1,7 @@
 import pytest
 import os
-import manufactorum.util.users as users
-from manufactorum.util.users import User
+import manufactorum.users as users
+from manufactorum.users import User
 from unittest.mock import patch
 from tests.unittest_utils import temp_file
 
@@ -17,7 +17,7 @@ def test_user_class():
     assert same_username_user.password_hash == 'other invalid hash'
 
     assert user.__str__() == 'User'
-    assert user.__repr__() == "<class 'manufactorum.util.users.User'> 'User'"
+    assert user.__repr__() == "<class 'manufactorum.users.User'> 'User'"
 
 
 def test_user_password():
@@ -33,7 +33,7 @@ def test_user_password():
 
 def test_load_users():
     with temp_file('testusers.dat'):
-        with patch('manufactorum.util.users.USERS_FILE', 'testusers.dat'):
+        with patch('manufactorum.users.USERS_FILE', 'testusers.dat'):
             assert users.load_users() == []
 
             users.add_user(
@@ -60,7 +60,7 @@ def test_add_user():
     except FileNotFoundError:
         pass
 
-    with patch('manufactorum.util.users.USERS_FILE', test_file):
+    with patch('manufactorum.users.USERS_FILE', test_file):
         users.add_user('user', 'user')
         user = users.get_user('user')
 

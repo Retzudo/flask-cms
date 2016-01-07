@@ -1,4 +1,4 @@
-from manufactorum.util import content
+from manufactorum import content
 import os
 
 

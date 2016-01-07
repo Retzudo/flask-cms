@@ -18,7 +18,7 @@ def custom_tags():
         # The exception that might get thrown here is the one we want to show
         # the user if they specify a non-existing file so don't handle it.
         file_path = os.path.abspath(os.path.dirname(__file__))
-        path = os.path.join(file_path, '../content/', file_name)
+        path = os.path.join(file_path, 'content/', file_name)
         with open(path) as f:
             file_content = f.read()
 

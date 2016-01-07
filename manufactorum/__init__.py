@@ -1,8 +1,8 @@
 from flask import Flask
 from flask.ext.login import LoginManager
 from flask.ext.cache import Cache
-from manufactorum.util import tags
-from manufactorum.util import users
+from manufactorum import tags
+from manufactorum import users
 
 app = Flask(__name__)
 

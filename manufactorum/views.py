@@ -1,9 +1,9 @@
 from manufactorum import app
 from flask import render_template, abort, redirect
 from manufactorum import cache
-from manufactorum.util import forms
-from manufactorum.util import users
-from manufactorum.util import content
+from manufactorum import forms
+from manufactorum import users
+from manufactorum import content
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 from flask.ext.login import login_required
