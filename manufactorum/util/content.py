@@ -1,4 +1,5 @@
 import os
+from manufactorum import cache
 
 
 def update_file(file_name, content):
@@ -7,3 +8,5 @@ def update_file(file_name, content):
 
     with open(path, 'w') as f:
         f.write(content)
+
+    cache.clear()

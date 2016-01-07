@@ -1,4 +1,4 @@
-from manufactorum import app
+from manufactorum import app, cache
 from tests.unittest_utils import temp_file
 
 app.config.update(TESTING=True)
@@ -19,6 +19,8 @@ def test_routes():
     with temp_file('manufactorum/templates/_test_routes.html', content):
         response = client.get('/test_routes')
         assert response.data.decode('utf8') == content
+
+    cache.clear()
 
     response = client.get('/test_routes')
     assert response.status_code == 404

@@ -1,9 +1,9 @@
 from manufactorum import app
 from flask import render_template, abort, redirect
+from manufactorum import cache
 from manufactorum.util import forms
 from manufactorum.util import users
 from manufactorum.util import content
-from manufactorum.util import cache
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 from flask.ext.login import login_required
@@ -16,6 +16,10 @@ def is_logged_in():
         return current_user.is_authenticated
     else:
         return False
+
+
+def dont_cache():
+    return is_logged_in() or app.debug
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -50,18 +54,14 @@ def update_text():
 
 @app.route('/', defaults={'path': '_index'}, methods=['GET'])
 @app.route('/<path:path>', methods=['GET'])
+@cache.cached(unless=dont_cache)
 def index(path):
-    cached = cache.get_path(path)
-    if cached is not None and not is_logged_in() and not app.debug:
-        return cached
-    else:
-        try:
-            if path == '_index':
-                rendered = render_template('index.html')
-            else:
-                path = path.replace('/', '__')
-                rendered = render_template('_{}.html'.format(path))
-            cache.cache_path(path, rendered)
-            return rendered
-        except TemplateNotFound:
-            abort(404)
+    try:
+        if path == '_index':
+            rendered = render_template('index.html')
+        else:
+            path = path.replace('/', '__')
+            rendered = render_template('_{}.html'.format(path))
+        return rendered
+    except TemplateNotFound:
+        abort(404)
