@@ -39,7 +39,7 @@ def load_users():
     try:
         with open(USERS_FILE) as f:
             for line in f.readlines():
-                username, password_hash = line.strip().split(':')
+                username, _, password_hash = line.strip().rpartition(':')
                 user = User(username, password_hash)
                 users_list.append(user)
     except IOError:
@@ -68,14 +68,14 @@ def add_user(username, password):
             f.write('{}:{}\r'.format(user.username, user.password_hash))
         return user
     else:
-        raise Exception('Users already exists.')
+        raise ValueError('Users already exists.')
 
 
 def remove_user(username):
     try:
         with open(USERS_FILE, 'w') as f:
             lines = f.readlines()
-            lines = [line for line in lines if not line.startswith(username)]
+            lines = [line for line in lines if not line.startswith(username + ':')]
             f.write('\n'.join(lines))
     except IOError:
         pass

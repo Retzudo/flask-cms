@@ -26,7 +26,14 @@ def add_admin():
     password_repeat = getpass('Repeat: ')
 
     if password == password_repeat:
-        users.add_user(username, password)
+        try:
+            users.add_user(username, password)
+            print('User {} added successfully'.format(username))
+        except ValueError:
+            print(
+                'User {} already exists.'.format(username),
+                file=sys.stderr
+            )
     else:
         print('Passwords did not match.', file=sys.stderr)
 
