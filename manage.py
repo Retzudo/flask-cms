@@ -10,13 +10,23 @@ manager = Manager(app)
 
 
 @manager.option(
+    '-h', '--host',
+    dest='host',
+    default='127.0.0.1'
+)
+@manager.option(
+    '-p', '--port',
+    dest='port',
+    default='5000'
+)
+@manager.option(
     '--no-debug',
     dest='no_debug',
     action='store_true',
     help='Disable debugging mode'
 )
-def run(no_debug=False):
-    app.run(debug=(not no_debug))
+def run(host='127.0.0.1', port=5000, no_debug=False):
+    app.run(host=host, port=int(port), debug=(not no_debug))
 
 
 @manager.command
