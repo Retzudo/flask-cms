@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 import sys
+import pytest
 from flask.ext.script import Manager
 from manufactorum import app
 from manufactorum import users
@@ -27,6 +29,19 @@ def add_admin():
         users.add_user(username, password)
     else:
         print('Passwords did not match.', file=sys.stderr)
+
+
+@manager.option(
+    '-c', '--coverage',
+    action='store_true',
+    help='Run with coverage'
+)
+def test(coverage):
+    args = ['--ignore=env']
+    if coverage:
+        args.append('--cov=manufactorum')
+        args.append('--cov-report=term-missing')
+    pytest.main(args)
 
 
 if __name__ == '__main__':
