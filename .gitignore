@@ -1,4 +1,5 @@
 .idea
+.coverage
 env/
 *.pyc
 rope_project/
