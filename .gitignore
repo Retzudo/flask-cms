@@ -5,6 +5,8 @@
 /htmlcov
 /manufactorum/content/
 /manufactorum/static/bower
+/manufactorum/static/images/*
+!/manufactorum/static/images/.gitkeep
 /manufactorum/templates/_*.html
 env/
 rope_project/
