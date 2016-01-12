@@ -25,6 +25,8 @@ if not app.config['CACHING_DISABLED']:
 else:
     cache_config = {'CACHE_TYPE': 'null'}
 
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024
+
 cache = Cache(app, config=cache_config)
 
 import manufactorum.views

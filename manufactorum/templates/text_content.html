@@ -4,12 +4,14 @@
     tinymce.init({
         selector: '.edit-text',
         inline: true,
-        plugins: 'save autosave code',
+        plugins: 'save autosave code image imagetools paste',
         menubar: false,
-        toolbar: 'save | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | code',
+        toolbar: 'save | undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | image | code',
         save_enablewhendirty: true,
+        paste_data_images: true,
+        images_upload_url: '{{ url_for('upload_image') }}',
         save_onsavecallback: function () {
-            $.post('/update-text', {
+            $.post('{{ url_for('update_text') }}', {
                 file_name: $('.edit-text').data('filename'),
                 content: this.getContent()
             });

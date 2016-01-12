@@ -1,5 +1,5 @@
 from manufactorum import app
-from flask import render_template, abort, redirect
+from flask import render_template, abort, redirect, request, jsonify
 from manufactorum import cache
 from manufactorum import forms
 from manufactorum import users
@@ -44,12 +44,25 @@ def logout():
 @app.route('/update-text', methods=['POST'])
 @login_required
 def update_text():
+    import pprint
+    pprint.pprint(request.files)
     form = forms.UpdateTextForm(csrf_enabled=False)
     if form.validate_on_submit():
         content.update_file(form.data['file_name'], form.data['content'])
-        cache.delete_all_paths()
+        cache.clear()
 
     return ''
+
+
+@app.route('/upload-image', methods=['POST'])
+@login_required
+def upload_image():
+    """Expect one file and safe it on the server."""
+    server_path = content.save_file(request.files['file'])
+    #server_path = '/bla.jpg'
+    return jsonify({
+        'location': server_path
+    })
 
 
 @app.route('/', defaults={'path': '_index'}, methods=['GET'])
