@@ -5,3 +5,6 @@ services:
     - redis-server
 script:
     - py.test
+branches:
+    only:
+        - master
