@@ -9,3 +9,4 @@
 env/
 rope_project/
 users.dat
+.vagrant
